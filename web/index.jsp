@@ -8,9 +8,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-	<title>$Title$</title>
+	<title>Home</title>
 </head>
 <body>
-$END$
+	<% if (session.getAttribute("LoggedIn") == null) {
+		out.println("<a href=\"login.jsp\">Login</a>");
+		out.println("<a href=\"register.jsp\">Register</a>");
+	}%>
+	<% if (session.getAttribute("LoggedIn") != null) {
+		out.println("<a href=\"shop.jsp\">Shop</a>");
+		out.println("<a href=\"shop.jsp\">Shop</a>");
+	}%>
 </body>
 </html>
