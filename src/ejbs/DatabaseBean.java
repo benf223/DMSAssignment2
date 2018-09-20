@@ -3,13 +3,12 @@ package ejbs;
 import javax.ejb.Stateless;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 @Stateless
 public class DatabaseBean implements Database
 {
-	private final String URL = "jdbc:derby://localhost:1527/AssignmentDB;create=true";
+	private final String URL = "jdbc:derby:D:/Documents/Code Projects/Java/DMSAssignment2/AssignmentDB";
 	private Connection connection;
 	private Statement statement;
 	
@@ -38,5 +37,11 @@ public class DatabaseBean implements Database
 		}
 		
 		return statement == null;
+	}
+	
+	@Override
+	public String register(String uName, String password, String email)
+	{
+		return "WIP";
 	}
 }

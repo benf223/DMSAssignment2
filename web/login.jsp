@@ -12,7 +12,7 @@
 </head>
 <body>
 	<h2>Login:</h2>
-	<form>
+	<form action="${pageContext.request.contextPath}/UserManagement" method="get">
 		<label>
 			Username
 			<input type="text">
