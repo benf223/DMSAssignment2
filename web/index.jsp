@@ -19,5 +19,8 @@
 		out.println("<a href=\"shop.jsp\">Shop</a>");
 		out.println("<a href=\"shop.jsp\">Shop</a>");
 	}%>
+    <form action="${pageContext.request.contextPath}/DatabaseInterpreter" method="post">
+        <input type="submit" placeholder="submit">
+    </form>
 </body>
 </html>

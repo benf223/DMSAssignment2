@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "DatabaseInterpreter")
+@WebServlet(name = "/DatabaseInterpreter", urlPatterns = {"/DatabaseInterpreter"})
 public class DatabaseInterpreter extends HttpServlet
 {
 	@EJB
@@ -18,7 +18,7 @@ public class DatabaseInterpreter extends HttpServlet
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-	
+		response.getWriter().println(dbBean.getResult("test"));
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
