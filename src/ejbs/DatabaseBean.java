@@ -9,9 +9,11 @@ import java.util.ArrayList;
 @Stateless
 public class DatabaseBean implements Database
 {
-	private final String URL = "jdbc:derby:D:/Documents/Code Projects/Java/DMSAssignment2/AssignmentDB";
+	private final String URL = "jdbc:derby:/AssignmentDB;create=true";
 	private Connection connection;
 	private Statement statement;
+	
+	private boolean initialised = false;
 	
 	private Object connect()
 	{
@@ -22,21 +24,49 @@ public class DatabaseBean implements Database
 				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 				connection = DriverManager.getConnection(URL, "admin", "admin");
 				statement = connection.createStatement();
+				
+				if (!initialised)
+				{
+					try
+					{
+						statement.executeUpdate("CREATE SCHEMA ADMIN AUTHORIZATION admin");
+					}
+					catch (Exception e)
+					{
+						// Don't care
+					}
+					
+					try
+					{
+						statement.executeQuery("SELECT * FROM SHOP_ITEMS");
+					}
+					catch (Exception e)
+					{
+						statement.executeUpdate("CREATE TABLE SHOP_ITEMS (ID INTEGER PRIMARY KEY, NAME VARCHAR(30), DESCRIPTION VARCHAR(500), PRICE INTEGER, QUANTITY INTEGER)");
+						statement.executeUpdate("INSERT INTO SHOP_ITEMS (NAME, DESCRIPTION, PRICE, QUANTITY, ID) VALUES ('Water', 'Good for you', 93, 900000, 1)");
+						statement.executeUpdate("INSERT INTO SHOP_ITEMS (NAME, DESCRIPTION, PRICE, QUANTITY, ID) VALUES ('Alcohol', 'Not as good for you', 48390, 40, 2)");
+						statement.executeUpdate("INSERT INTO SHOP_ITEMS (NAME, DESCRIPTION, PRICE, QUANTITY, ID) VALUES ('Rat Poison', 'Bad for you', 23, 90000, 3)");
+						statement.executeUpdate("INSERT INTO SHOP_ITEMS (NAME, DESCRIPTION, PRICE, QUANTITY, ID) VALUES ('Nectar', 'Good for bees', 890890, 1000, 4)");
+					}
+					
+					try
+					{
+						statement.executeQuery("SELECT * FROM USERS");
+					}
+					catch (Exception e)
+					{
+						statement.executeUpdate("CREATE TABLE USERS (USERNAME VARCHAR(20) PRIMARY KEY, EMAIL VARCHAR(20), PASSWORD VARCHAR(20))");
+						statement.executeUpdate("INSERT INTO USERS (USERNAME, EMAIL, PASSWORD) VALUES ('admin', 'admin@admin.com', 'admin')");
+					}
+					
+					initialised = true;
+				}
 			}
 			catch (Exception e)
 			{
-				return e;
+				e.printStackTrace();
 			}
-			
 		}
-		
-		return statement == null;
-	}
-	
-	@Override
-	public Object getResult(String query)
-	{
-		connect();
 		
 		return statement == null;
 	}
@@ -48,7 +78,7 @@ public class DatabaseBean implements Database
 		
 		try
 		{
-			ResultSet rs = statement.executeQuery("SELECT USERNAME FROM USERS WHERE USERNAME =\'" + uName + "\'");
+			ResultSet rs = statement.executeQuery("SELECT USERNAME FROM USERS WHERE USERNAME = '" + uName + "'");
 			
 			if (rs.next())
 			{
@@ -57,7 +87,7 @@ public class DatabaseBean implements Database
 			
 			rs.close();
 			
-			rs = statement.executeQuery("SELECT EMAIL FROM USERS WHERE EMAIL = \'" + email + "\'");
+			rs = statement.executeQuery("SELECT EMAIL FROM USERS WHERE EMAIL = '" + email + "'");
 			
 			if (rs.next())
 			{
@@ -66,7 +96,7 @@ public class DatabaseBean implements Database
 			
 			rs.close();
 			
-			statement.execute("INSERT INTO USERS (USERNAME, EMAIL, PASSWORD) VALUES  (\'" + uName + "\', \'" + email + "\', \'" + password + "\')");
+			statement.execute("INSERT INTO USERS (USERNAME, EMAIL, PASSWORD) VALUES  ('" + uName + "', '" + email + "', '" + password + "')");
 		}
 		catch (SQLException e)
 		{
@@ -83,7 +113,7 @@ public class DatabaseBean implements Database
 		
 		try
 		{
-			ResultSet rs = statement.executeQuery("SELECT * FROM USERS WHERE USERNAME = \'" + uName + "\'");
+			ResultSet rs = statement.executeQuery("SELECT * FROM USERS WHERE USERNAME = '" + uName + "'");
 			
 			if (rs.next())
 			{
@@ -118,7 +148,7 @@ public class DatabaseBean implements Database
 		
 		try
 		{
-			ResultSet rs = statement.executeQuery("SELECT * FROM SHOP_ITEM");
+			ResultSet rs = statement.executeQuery("SELECT * FROM SHOP_ITEMS");
 			
 			while (rs.next())
 			{
@@ -139,5 +169,31 @@ public class DatabaseBean implements Database
 		}
 		
 		return out;
+	}
+	
+	@Override
+	public void decreaseQuantity(String itemName, int quantity)
+	{
+		ArrayList<ShopItem> items = getItems();
+		
+		for (ShopItem item : items)
+		{
+			if (item.getName().equals(itemName))
+			{
+				quantity = item.getQuantity() - quantity;
+				
+				try
+				{
+					statement.executeUpdate("UPDATE SHOP_ITEMS SET QUANTITY = " + quantity + " WHERE NAME = '" + itemName + "'");
+					return;
+				}
+				catch (SQLException e)
+				{
+					e.printStackTrace();
+				}
+				
+				return;
+			}
+		}
 	}
 }

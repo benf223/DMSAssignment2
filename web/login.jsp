@@ -1,11 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Ben
-  Date: 13/09/2018
-  Time: 1:25 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
     <title>Login</title>
@@ -17,20 +10,22 @@
 
     if (request.getSession(true).getAttribute("failedLogin") != null)
     {
-        username = request.getParameter("uName");
+        username = request.getParameter("uName") == null ? "" : request.getParameter("uName");
 
-        out.println("<h2>" + request.getSession().getAttribute("failedRegister") + "</h2>");
+        out.println("<h2>" + request.getSession().getAttribute("failedLogin") + "</h2>");
+
+        request.getSession().setAttribute("failedLogin", null);
     }
 %>
 <form action="${pageContext.request.contextPath}/UserManagement" method="post">
     <label>
         Username
-        <input type="text" placeholder="<%= username%>">
+        <input type="text" value="<%= username%>" name="uName">
     </label>
     <br>
     <label>
         Password
-        <input type="password">
+        <input type="password" name="pwd">
     </label>
     <br>
     <input type="submit">

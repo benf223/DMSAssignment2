@@ -20,7 +20,7 @@ public class UserManagement extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		// Login
-		String uName = request.getParameter("user");
+		String uName = request.getParameter("uName");
 		String password = request.getParameter("pwd");
 		String dest = "/index.jsp";
 		
@@ -29,14 +29,21 @@ public class UserManagement extends HttpServlet
 		if (result == null)
 		{
 			request.getSession(true).setAttribute("LoggedIn", true);
+			
+			if (request.getSession().getAttribute("failedLogin") != null)
+			{
+				request.getSession().setAttribute("failedLogin", null);
+			}
 		}
 		else if (result.equals("Incorrect Password"))
 		{
-		
+			dest = "/login.jsp?uName=" + uName;
+			request.getSession(true).setAttribute("failedLogin", result);
 		}
 		else if (result.equals("User does not exist."))
 		{
-		
+			dest = "/login.jsp";
+			request.getSession(true).setAttribute("failedLogin", result);
 		}
 		
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(dest);
@@ -46,7 +53,7 @@ public class UserManagement extends HttpServlet
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		// Register
-		String uName = request.getParameter("user");
+		String uName = request.getParameter("uName");
 		String password = request.getParameter("pwd");
 		String confirmPassword = request.getParameter("confPwd");
 		String email = request.getParameter("email");

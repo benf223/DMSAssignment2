@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="assignment2">
+    <output-path>$PROJECT_DIR$/out/artifacts/assignment2</output-path>
+    <root id="archive" name="assignment2.war">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="DMSAssignment2/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Java EE 6-Java EE 6" />
+        </element>
+        <element id="directory" name="classes">
+          <element id="module-output" name="DMSAssignment2" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

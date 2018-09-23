@@ -12,31 +12,33 @@
 
     if (request.getSession(true).getAttribute("failedRegister") != null)
     {
-        username = request.getParameter("uName");
-        email = request.getParameter("pwd");
+        username = request.getParameter("uName") == null ? "" : request.getParameter("uName");
+        email = request.getParameter("email") == null ? "" : request.getParameter("email");
 
         out.println("<h2>" + request.getSession().getAttribute("failedRegister") + "</h2>");
+
+        request.getSession().setAttribute("failedRegister", null);
     }
 %>
 <form action="${pageContext.request.contextPath}/UserManagement" method="get">
     <label>
         Username
-        <input type="text" placeholder="<%= username%>">
+        <input type="text" value="<%= username%>" name="uName">
     </label>
     <br>
     <label>
         Email
-        <input type="email" placeholder="<%= email%>">
+        <input type="email" value="<%= email%>" name="email">
     </label>
     <br>
     <label>
         Password
-        <input type="password">
+        <input type="password" name="pwd">
     </label>
     <br>
     <label>
         Confirm Password
-        <input type="password">
+        <input type="password" name="confPwd">
     </label>
     <br>
     <input type="submit">
