@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "/DatabaseInterpreter", urlPatterns = {"/DatabaseInterpreter"})
+@WebServlet(name = "/DatabaseInterpreter", urlPatterns = { "/DatabaseInterpreter" })
 public class DatabaseInterpreter extends HttpServlet
 {
 	@EJB

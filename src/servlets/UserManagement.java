@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "UserManagement", urlPatterns = {"/UserManagement"})
+@WebServlet(name = "UserManagement", urlPatterns = { "/UserManagement" })
 public class UserManagement extends HttpServlet
 {
 	@EJB
@@ -20,7 +20,27 @@ public class UserManagement extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		// Login
+		String uName = request.getParameter("user");
+		String password = request.getParameter("pwd");
+		String dest = "/index.jsp";
 		
+		String result = dbBean.login(uName, password);
+		
+		if (result == null)
+		{
+			request.getSession(true).setAttribute("LoggedIn", true);
+		}
+		else if (result.equals("Incorrect Password"))
+		{
+		
+		}
+		else if (result.equals("User does not exist."))
+		{
+		
+		}
+		
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(dest);
+		dispatcher.forward(request, response);
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -40,13 +60,32 @@ public class UserManagement extends HttpServlet
 			if (result != null)
 			{
 				dest = "/register.jsp";
-				request.getSession().setAttribute("failed", result);
+				
+				if (result.equals("Username already in use."))
+				{
+					dest += "?email=" + email;
+				}
+				else if (result.equals("Email already in use."))
+				{
+					dest += "?uName=" + uName;
+				}
+				
+				request.getSession(true).setAttribute("failedRegister", result);
+			}
+			else
+			{
+				request.getSession(true).setAttribute("LoggedIn", true);
+				
+				if (request.getSession().getAttribute("failedRegister") != null)
+				{
+					request.getSession().setAttribute("failedRegister", null);
+				}
 			}
 		}
 		else
 		{
-			dest = "/register.jsp";
-			request.getSession().setAttribute("failed", "Passwords don't match");
+			dest = "/register.jsp?uName=" + uName;
+			request.getSession(true).setAttribute("failedRegister", "Passwords don't match");
 		}
 		
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(dest);
